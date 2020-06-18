@@ -14,8 +14,12 @@ RUN sed -i 's/Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf \
   && chgrp -R 0 /var/log/httpd /var/run/httpd \
   && chmod -R g=u /var/log/httpd /var/run/httpd
 
+ADD ./httpd.conf /etc/httpd/conf/
 ADD ./conf.d/ /etc/httpd/conf.d/
-ADD ./index.html /usr/share/httpd/noindex/
+
+# forward request and error logs to docker log collector
+RUN ln -sf /dev/stdout /var/log/httpd/access_log \
+	&& ln -sf /dev/stderr /var/log/httpd/error_log
 
 USER 1001
 
