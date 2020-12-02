@@ -7,10 +7,11 @@ LABEL name="spaship/httpd" \
 
 EXPOSE 8080
 
-RUN microdnf install -y --nodocs httpd && microdnf clean all
+RUN microdnf install -y --nodocs httpd mod_ssl && microdnf clean all
 
 RUN sed -i 's/Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf \
   && sed -i 's/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf \
+  && rm -fr /etc/httpd/conf.d/ssl.conf \
   && chgrp -R 0 /var/log/httpd /var/run/httpd \
   && chmod -R g=u /var/log/httpd /var/run/httpd
 
